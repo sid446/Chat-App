@@ -7,6 +7,5 @@ app.post("/",(req,res)=>{
     res.send("hi")
 })
 
-app
 
 export {app}
