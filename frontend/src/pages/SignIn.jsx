@@ -1,67 +1,70 @@
 import React, { useState } from 'react';
 import { back, line, cup,  flag,google } from '../utils/index.js'; // Ensure you import the help flag logo
+import { useNavigate } from 'react-router-dom';
 
 function SignIn() {
+  const navigate=useNavigate();
   const [modeActive, setModeActive] = useState(false);
   const [loginMode, setLoginMode] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false); // State to manage modal visibility
   const [email, setEmail] = useState(''); // State for email input
   const [emailError, setEmailError] = useState(''); // State for email error message
-  const [formData,setFormData]=useState({});
-  const [error, setError] = useState("heyyy");
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    password: '',
+  });
+  
+  const [error, setError] = useState("");
   
 
-  const handleChange=(e)=>{
-    setFormData({
-      ...formData,
-      [e.target.id]:e.target.value, 
-    })
-  }
+  const handleChange = (e) => {
+    const { id, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [id]: value || '', // Ensure value is always a string
+    }));
+  };
+  
   console.log('formData', formData)
 
-  const handleOnSubmit=async(e)=>{
+  const handleOnSubmit = async (e) => {
     e.preventDefault();
+    const endPoint = loginMode
+      ? "http://localhost:7000/api/v1/users/register"
+      : "http://localhost:7000/api/v1/users/login";
+  
     try {
-      const res= await fetch('',{
-        method:'POST',
-        header:{
-          'Content-type':'application/json',
+      const res = await fetch(endPoint, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
         },
-        body:JSON.stringify(formData),
-      })
-
-      const data=await res.json();
-      console.log('Response:', res);
-      console.log('Data:', data);
-
+        body: JSON.stringify(formData),
+        credentials: 'include',
+      });
       if(!res.ok){
-        setError(data.message || 'Something went wrong');
-        return;
+        const data=await res.json();
+        setError(data.message)
+        return
       }
+
+      
+      
+      
+      navigate('/');
     } catch (error) {
       setError(error.message || 'Network error');
     }
-
-  }
-
-  const handleGoogleLogin = () => {
-    setFormData({
-      ...formData,
-      loginType: 'Google',
-    });
-    handleOnSubmit(new Event('submit'));
   };
   
-
   const handleCombinedChange = (e) => {
     handleEmailChange(e);
     handleChange(e);
   };
   
-  const ModeChange = () => {
-    setModeActive(!modeActive);
-  };
+ 
 
   // Toggle between login and register modes
   const SignUpRegisterChange = () => {
@@ -140,13 +143,14 @@ function SignIn() {
 
             {/* Input fields */}
             <form onSubmit={handleOnSubmit} className={`flex flex-col justify-center items-center transition-all duration-300 ease-in-out ${loginMode ? 'gap-6 opacity-100' : 'gap-3 opacity-100'}`}>
-              {/* Render Username field only in register mode */}
+              {/* Render Name field only in register mode */}
               {loginMode && (
                 <input
                   className=" w-[70vw]  md:w-[30vw] h-[3rem] md:h-[3.5rem] p-4 rounded-full border-2 border-zinc-500 bg-transparent transition-opacity duration-500 ease-in-out placeholder:text-gray-400 placeholder:italic placeholder:font-alegreya-sans-sc placeholder:text-sm text-base text-white font-alegreya-sans-sc"
                   type="text"
-                  id='username'
-                  placeholder="Username"
+                  id='name'
+                  placeholder="Name"
+                  value={formData.name}
                   onChange={handleChange}
                 />
               )}
@@ -155,7 +159,7 @@ function SignIn() {
                 type="text"
                 id="email"
                 placeholder="Email"
-                value={email}
+                value={formData.email}
                 onChange={handleCombinedChange}
               
               />
@@ -169,6 +173,7 @@ function SignIn() {
                   type={showPassword ? 'text' : 'password'}
                   id="password"
                   placeholder="Password"
+                  value={formData.password}
                   onChange={handleChange}
                 />
                 <button
@@ -184,7 +189,7 @@ function SignIn() {
               <div className='w-[70vw] md:w-[30vw] flex justify-between'>
               <button
               type='button'
-              onClick={handleGoogleLogin}
+             
                   className={`w-[43vw] md:w-[16vw] h-[2.5rem] md:h-[3.5rem] bg-white flex justify-between p-4 items-center   text-xl font-bold rounded-full mt-6 transform transition-transform duration-300 hover:scale-105 hover:bg-opacity-80 focus:outline-none focus:ring-2 focus:ring-offset-2`}
                 >
                   <img className='w-[1.3rem] md:w-[2rem]' src={google} alt="" />
