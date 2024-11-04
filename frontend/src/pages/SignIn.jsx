@@ -4,9 +4,10 @@ import { useNavigate } from 'react-router-dom';
 import {useDispatch,useSelector} from 'react-redux'
 import { signInStart, signInSuccess, signInFailure } from '../redux/user/userSlice.js';
 
+
 function SignIn() {
   const navigate=useNavigate();
-  const [modeActive, setModeActive] = useState(false);
+  const [successMessage,setSuccessMessage]=useState('')
   const [loginMode, setLoginMode] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false); // State to manage modal visibility
@@ -51,12 +52,19 @@ function SignIn() {
       const data=await res.json();
       if (res.ok) {
         dispatch(signInSuccess(data));
-        navigate('/'); // Adjust if needed based on data structure
+        setSuccessMessage(data.message)
+        navigate("/")
       } else {
         dispatch(signInFailure(data.message));
+        setSuccessMessage('')
+      }
+      if(loginMode==true){
+        setLoginMode(false)
+        setSuccessMessage(data.message)
       }
     } catch (error) {
       dispatch(signInFailure(error.message));
+      setSuccessMessage(''); 
     }
 
   };
@@ -207,7 +215,7 @@ function SignIn() {
                 </button>
               </div>
             </form>
-            
+            {successMessage && <span className="text-green-500 text-sm">{successMessage} </span>}
             {error && <span className="text-red-500 text-sm ">{error}</span>}
           </div>
 
@@ -229,21 +237,12 @@ function SignIn() {
             <div className="w-[58vw] flex-col  items-center font-alegreya-sans-sc text-lg  ">
               <div className=" gap-6 flex justify-center mr-10 items-center">
                 <img className="w-[2rem]   md:w-[3rem] lg:w-[4rem]  " src={cup} alt="" />
-                <h1 className="font-bold text-white text-2xl sm:text-4xl  md:text-5xl lg:text-6xl ">Welcome !!</h1>
+                <h1 className="font-bold text-white text-2xl sm:text-4xl  md:text-5xl  lg:text-6xl ">Welcome !!</h1>
               </div>
 
               {/* Account prompt */}
               <div className="flex   w-full justify-center  items-center mt-5">
-                <span className="relative group w-[100%] md:w-[60%] lg:w-[60%]">
-                  {/* Enhanced Quote styling */}
-                  <h1 className="text-white text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold italic leading-relaxed font-alegreya-sans-sc text-center transition-all duration-300 ease-in-out transform group-hover:scale-105 group-hover:text-opacity-90">
-                    <span className="absolute -left-5  md:-left-10 translate-x-6 top-0 md:-top-2 text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-black opacity-70">“</span>
-                    why not use your money to make more money
-                    <span className="absolute right-0 -translate-x-6 -bottom-2 text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-black opacity-70">”</span>
-                  </h1>
-                  {/* Animated underline */}
-                  <span className="absolute left-1/2 bottom-0 h-[2px] w-[60%] bg-white opacity-70 transform -translate-x-1/2 scale-x-100 group-hover:scale-x-50 transition-transform duration-300 ease-in-out" />
-               </span> 
+                
               </div>
             </div>
           </div>
