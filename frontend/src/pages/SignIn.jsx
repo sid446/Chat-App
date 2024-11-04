@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { back, line, cup,  flag,google } from '../utils/index.js'; // Ensure you import the help flag logo
 import { useNavigate } from 'react-router-dom';
+import {useDispatch,useSelector} from 'react-redux'
+import { signInStart, signInSuccess, signInFailure } from '../redux/user/userSlice.js';
 
 function SignIn() {
   const navigate=useNavigate();
@@ -15,8 +17,9 @@ function SignIn() {
     email: '',
     password: '',
   });
-  
-  const [error, setError] = useState("");
+  const {loading,error}=useSelector((state)=>state.user)
+  const dispatch=useDispatch()
+
   
 
   const handleChange = (e) => {
@@ -36,6 +39,7 @@ function SignIn() {
       : "http://localhost:7000/api/v1/users/login";
   
     try {
+      dispatch(signInStart())
       const res = await fetch(endPoint, {
         method: 'POST',
         headers: {
@@ -44,19 +48,17 @@ function SignIn() {
         body: JSON.stringify(formData),
         credentials: 'include',
       });
-      if(!res.ok){
-        const data=await res.json();
-        setError(data.message)
-        return
+      const data=await res.json();
+      if (res.ok) {
+        dispatch(signInSuccess(data));
+        navigate('/'); // Adjust if needed based on data structure
+      } else {
+        dispatch(signInFailure(data.message));
       }
-
-      
-      
-      
-      navigate('/');
     } catch (error) {
-      setError(error.message || 'Network error');
+      dispatch(signInFailure(error.message));
     }
+
   };
   
   const handleCombinedChange = (e) => {
