@@ -20,7 +20,7 @@ const io = new Server(server, {
     },
 });
 
-const users = {};
+
 
 // Database connection
 connectDB()
