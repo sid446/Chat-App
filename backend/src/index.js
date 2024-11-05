@@ -21,7 +21,7 @@ const io = new Server(server, {
 });
 
 
-
+export {io}
 // Database connection
 connectDB()
     .then(() => {

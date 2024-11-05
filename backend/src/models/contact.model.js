@@ -1,27 +1,19 @@
 import mongoose ,{ Schema } from "mongoose";
 
 const ContactSchema = new Schema({
-    nameA:{
-        type:mongoose.Schema.Types.ObjectId,
-        ref:"User",
-        required:true
-
-
-    },
-    nameB:{
+    userId:{
         type:mongoose.Schema.Types.ObjectId,
         ref:"User",
         required:true
     },
-    emailA:{
+    email:{
         type: String,
         required: true
     },
-    emailB:{
-        type: String,
-        required: true,
+    name: {
+        type: String, // Change this from ObjectId to String to store the name directly
+        required: true
     }
-
 })
 
 export const Contact =mongoose.model("Contact",ContactSchema)

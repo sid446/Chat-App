@@ -20,15 +20,16 @@ function Home() {
   useEffect(() => {
     const newSocket = io("http://localhost:7000");
     setSocket(newSocket);
-    
-    if (user && user.email) {
-      newSocket.emit('login', user.email);
-    }
-    
+    newSocket.emit('login',user.email)
+    console.log("hey")
+  
     newSocket.on('receiveMessage', ({ from, content }) => {
+      console.log('Received message:', { from, content });
       setMessages((prevMessages) => [...prevMessages, { from, content, type: 'received' }]);
       if (!recipient) setRecipient(from);
     });
+
+    
     
     newSocket.on("connect", () => console.log("Connected to socket"));
     

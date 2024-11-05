@@ -5,6 +5,7 @@ import {useDispatch,useSelector} from 'react-redux'
 import { signInStart, signInSuccess, signInFailure } from '../redux/user/userSlice.js';
 
 
+
 function SignIn() {
   const navigate=useNavigate();
   const [successMessage,setSuccessMessage]=useState('')
@@ -35,6 +36,7 @@ function SignIn() {
 
   const handleOnSubmit = async (e) => {
     e.preventDefault();
+   
     const endPoint = loginMode
       ? "http://localhost:7000/api/v1/users/register"
       : "http://localhost:7000/api/v1/users/login";
@@ -62,6 +64,9 @@ function SignIn() {
         setLoginMode(false)
         setSuccessMessage(data.message)
       }
+      
+        
+      
     } catch (error) {
       dispatch(signInFailure(error.message));
       setSuccessMessage(''); 

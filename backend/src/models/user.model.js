@@ -26,6 +26,11 @@ const userSchema=new  Schema({
     refreshToken:{
         type:String
     },
+    socketId:{
+        type:String,
+        default:null
+
+    },
     online:{
         type:Boolean,
         default:false
