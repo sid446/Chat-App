@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
     currentUser: null,
+    contacts: [], // Initialize contacts array
     error: null,
     loading: false,
 };
@@ -14,9 +15,7 @@ const userSlice = createSlice({
             state.loading = true;
         },
         signInSuccess: (state, action) => {
-            // Access the user object from the response data
-            console.log("Action Payload:", action.payload);
-            state.currentUser = action.payload.data.user; // Adjusted to access user correctly
+            state.currentUser = action.payload.data.user; // Access user correctly
             state.loading = false;
             state.error = null;
         },
@@ -26,12 +25,17 @@ const userSlice = createSlice({
         },
         logout: (state) => {
             state.currentUser = null; // Reset the user state on logout
+            state.contacts = []; // Optionally clear contacts on logout
         },
+        addContact: (state, action) => {
+            state.contacts = [...state.contacts, action.payload]; // This is fine as long as state.contacts is an array
+        },
+        
     }
 });
 
 // Export actions
-export const { signInFailure, signInStart, signInSuccess,logout } = userSlice.actions;
+export const { signInFailure, signInStart, signInSuccess, logout, addContact } = userSlice.actions;
 
 // Export reducer
 export default userSlice.reducer;

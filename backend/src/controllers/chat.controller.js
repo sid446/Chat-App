@@ -1,11 +1,10 @@
-import { ApiError } from "../utils/ApiError";
-import { ApiResponse } from "../utils/ApiResponse";
-import { asyncHandler } from "../utils/asyncHandler";
-import { Contact } from "../models/contact.model";
-import { User } from "../models/user.model";
-import { io } from "..";
+import { ApiError } from "../utils/ApiError.js";
+import { ApiResponse } from "../utils/ApiResponse.js";
 
-
+import { asyncHandler } from "../utils/asyncHandler.js";
+import { Contact } from "../models/contact.model.js";
+import { User } from "../models/user.model.js";
+import { io } from "../index.js";
 
 const addAccount=asyncHandler(async(req,res)=>{
     const {email}=req.body
@@ -32,8 +31,7 @@ const addAccount=asyncHandler(async(req,res)=>{
     await newContact.save();
 
    io.to(email).emit('addAccount',{})
-    
-
-
-
+   return res.status(201).json(new ApiResponse(200,newContact,"User created successfully"))
 })
+
+export {addAccount};

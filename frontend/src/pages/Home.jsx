@@ -94,7 +94,7 @@ function Home() {
       <LeftHomePart  
         userInfo={user} 
         setContact={handleAddContact} 
-        contacts={contacts} 
+       
         handleRecipient={handleRecipient} 
         recipient={recipient} 
         handleLogout={handleLogout} 
